@@ -29,21 +29,22 @@ void Print(IEnumerable<int> numbers)
 
 public class FilteringStrategySelector
 {
+
+    private readonly Dictionary<string, Func<int, bool>> _strategies = new Dictionary<string, Func<int, bool>>
+    {
+        { "Even", number => number % 2 == 0 },
+        { "Odd", number => number % 2 != 0 },
+        { "Positive", number => number > 0 }
+    };
+
     public Func<int, bool> Select(string filterByType)
     {
-        switch(filterByType)
+
+        if(!_strategies.ContainsKey(filterByType))
         {
-            case "Even":
-                return number => number % 2 == 0;
-            case "Odd":
-                return number => number % 2 != 0;
-                
-            case "Positive":
-                return number => number > 0;
-            
-            default:
-                throw new NotSupportedException($"{filterByType} is not supported filter at this moment.");
+            throw new NotSupportedException($"{filterByType} is not supported filter at this moment.");
         }
+        return _strategies[filterByType];
     }
 }
 

@@ -13,6 +13,7 @@ Console.WriteLine(@"Select filters:
 var numbers = new List<int> { 10, 14, -100, 55, 17, 22 };
 
 var userInput = Console.ReadLine();
+
 var fiteringStrategy = new FilteringStrategySelector().Select(userInput);
 List<int> result = new NumbersFilter().FilterBy(fiteringStrategy, numbers);
 

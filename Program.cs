@@ -4,21 +4,24 @@ using System;
 Console.WriteLine("------- Strategy design pattern -------");   
 Console.WriteLine();
 
-Console.WriteLine(@"Select filters: 
-1. Even numbers
-2. Odd numbers
-3. Positive numbers");
-
 
 var numbers = new List<int> { 10, 14, -100, 55, 17, 22 };
+
+var filteringStrategySelector = new FilteringStrategySelector();
+
+Console.WriteLine(@"Select filters: ");
+Console.WriteLine(string.Join(Environment.NewLine, filteringStrategySelector.FilteringStrategiesName));
+
 
 var userInput = Console.ReadLine();
 
 var fiteringStrategy = new FilteringStrategySelector().Select(userInput);
-List<int> result = new NumbersFilter().FilterBy(fiteringStrategy, numbers);
+var result = new Filter().FilterBy(fiteringStrategy, numbers);
 
 
 Print(result);
+var words = new[] { "apple", "banana", "cherry", "date" };
+var justWordsFiltered = new Filter().FilterBy(word => word.StartsWith("a"), words);
 
 Console.ReadKey();
 
@@ -34,8 +37,12 @@ public class FilteringStrategySelector
     {
         { "Even", number => number % 2 == 0 },
         { "Odd", number => number % 2 != 0 },
-        { "Positive", number => number > 0 }
+        { "Positive", number => number > 0 },
+        { "Negative", number => number < 0 },
+        { "All", number => true }
     };
+    
+    public IEnumerable<string> FilteringStrategiesName => _strategies.Keys;
 
     public Func<int, bool> Select(string filterByType)
     {
@@ -48,11 +55,11 @@ public class FilteringStrategySelector
     }
 }
 
-public class NumbersFilter
+public class Filter
 {
-    public List<int> FilterBy(Func<int, bool> predicate, List<int> numbers)
+    public IEnumerable<T> FilterBy<T>(Func<T, bool> predicate, IEnumerable<T> numbers)
     {
-        var result = new List<int>();
+        var result = new List<T>();
 
         foreach (var number in numbers)
         {
